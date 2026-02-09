@@ -1,4 +1,4 @@
-from engine.base import OSINTModule
+from backend.engine.base import OSINTModule
 import requests
 
 class Module(OSINTModule):

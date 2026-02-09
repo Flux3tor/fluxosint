@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from api.targets import router as target_router
-from api.leakguard import router as leakguard_router
-from api.jobs import router as jobs_router
+from backend.api.targets import router as target_router
+from backend.api.leakguard import router as leakguard_router
+from backend.api.jobs import router as jobs_router
 
 app = FastAPI(title="FluxOSINT")
 

@@ -1,4 +1,4 @@
-from engine.base import OSINTModule
+from backend.engine.base import OSINTModule
 import dns.resolver
 import requests
 import whois

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from db.database import get_db
-from engine.runner import run_modules
+from backend.db.database import get_db
+from backend.engine.runner import run_modules
 
 router = APIRouter(prefix="/targets", tags=["Targets"])
 

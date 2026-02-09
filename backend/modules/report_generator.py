@@ -1,4 +1,4 @@
-from engine.base import OSINTModule
+from backend.engine.base import OSINTModule
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 import os
