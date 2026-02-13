@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FluxOSINT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>FluxOSINT</h1>
+<p>All-in-One OSINT Dashboard</p>
+
+<div class="card">
+
+  <select id="typeSelect">
+    <option value="email">Email</option>
+    <option value="username">Username</option>
+    <option value="domain">Domain</option>
+    <option value="ip">IP Address</option>
+  </select>
+
+  <input id="targetInput" placeholder="Enter target">
+
+  <button onclick="scan()">Scan Target</button>
+
+</div>
+
+<pre id="result">Waiting for scan...</pre>
+
+<script src="app.js"></script>
+</body>
+</html>
