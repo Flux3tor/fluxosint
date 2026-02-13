@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FluxOSINT</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body class="osint">
+
+        <a href="https://hackclub.com/" target="_blank">
+            <img class="flag" src="https://assets.hackclub.com/flag-orpheus-left.svg">
+        </a>
+
+        <main class="card">
+
+            <h1 class="name">FluxOSINT</h1>
+            <p class="title">All-in-one OSINT dashboard</p>
+
+            <p class="bio">
+                Investigate emails, usernames, domains and IPs from one place.
+            </p>
+
+            <h3 class="sectionTitle">New Scan</h3>
+
+            <select id="typeSelect">
+                <option value="email">Email</option>
+                <option value="username">Username</option>
+                <option value="domain">Domain</option>
+                <option value="ip">IP Address</option>
+            </select>
+
+            <input id="targetInput" placeholder="Enter target">
+
+            <button id="scanBtn" onclick="scan()">Run Scan</button>
+
+            <h3 class="sectionTitle">Results</h3>
+            <pre id="result">Ready.</pre>
+
+        </main>
+
+
+        <div class="credits">
+          © <span id="year"></span>
+          <a href="https://github.com/Flux3tor" target="_blank">flux3tor</a>
+        </div>
+
+        <script src="app.js"></script>
+    </body>
+</html>

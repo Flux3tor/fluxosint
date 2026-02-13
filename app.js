@@ -20,3 +20,6 @@ async function scan() {
   document.getElementById("result").textContent =
     JSON.stringify(data, null, 2);
 }
+
+document.getElementById("year").textContent =
+  new Date().getFullYear();

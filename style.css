@@ -1,0 +1,105 @@
+body{
+  margin:0;
+  font-family:'Inter',system-ui;
+  color:#e8e8e8;
+  background:#080808;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.flag{
+  position:absolute;
+  top:0;
+  left:0;
+  width:180px;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+
+.osint .card{
+  max-width:520px;
+  padding:40px;
+}
+
+.osint .name{
+  font-size:38px;
+  margin-bottom:6px;
+}
+
+.osint .title{
+  color:#8c8c8c;
+  margin-bottom:12px;
+}
+
+.osint .bio{
+  color:#bfbfbf;
+  margin-bottom:22px;
+  line-height:1.5;
+}
+
+.osint .sectionTitle{
+  margin:26px 0 12px;
+  color:#777;
+  font-size:.85rem;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+}
+
+.osint select,
+.osint input{
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  background:#0e0e0e;
+  border:1px solid #222;
+  color:#e8e8e8;
+  font-family:'Inter';
+  font-size:14px;
+}
+
+.osint #scanBtn{
+  width:100%;
+  padding:12px;
+  background:#e8e8e8;
+  color:black;
+  border:none;
+  cursor:pointer;
+  margin-bottom:18px;
+  font-weight:600;
+  transition:.2s;
+}
+
+.osint #scanBtn:hover{
+  background:white;
+}
+
+.osint pre{
+  border:1px solid #222;
+  background:#0e0e0e;
+  padding:16px;
+  max-height:260px;
+  overflow:auto;
+  color:#bfbfbf;
+  font-size:13px;
+}
+
+.credits{
+  position:fixed;
+  bottom:16px;
+  left:50%;
+  transform:translateX(-50%);
+  color:#555;
+  font-size:.85rem;
+}
