@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FluxOSINT LeakGuard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<a href="https://hackclub.com/" target="_blank">
+  <img class="flag" src="https://assets.hackclub.com/flag-orpheus-left.svg">
+</a>
+
+<main class="card">
+
+  <h1 class="name">LeakGuard</h1>
+  <p class="title">Check if your password was leaked</p>
+  <p class="bio">Your password never leaves your browser.</p>
+
+  <div class="navLinks">
+    <a href="/">OSINT Scanner</a>
+    <a href="/leakguard.html">LeakGuard</a>
+  </div>
+
+  <div class="scanBox">
+    <input type="password" id="pw" placeholder="Enter password">
+    <button id="scanBtn" onclick="check()">Check Password</button>
+  </div>
+
+  <div id="result" class="resultCard neutral"></div>
+
+</main>
+
+<div class="credits">
+© <span id="year"></span>
+<a href="https://github.com/Flux3tor" target="_blank">Flux3tor</a>
+</div>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+
+async function sha1(str){
+  const buf = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("").toUpperCase();
+}
+
+async function check(){
+  const result = document.getElementById("result");
+  result.innerHTML="Checking breaches...";
+
+  const pw = document.getElementById("pw").value;
+  const hash = await sha1(pw);
+  const prefix = hash.slice(0,5);
+  const suffix = hash.slice(5);
+
+  const res = await fetch("/leakguard/"+prefix);
+  const data = await res.json();
+
+  if(data[suffix]){
+    result.innerHTML = "Password found in breaches "+data[suffix]+" times";
+    result.className="resultCard bad";
+  }else{
+    result.innerHTML = "Password not found in known breaches";
+    result.className="resultCard good";
+  }
+}
+</script>
+
+</body>
+</html>

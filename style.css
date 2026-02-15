@@ -94,6 +94,24 @@ select,input{
 .bad{color:#FF7C7C}
 .neutral{color:#aaa}
 
+.navLinks{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  margin-bottom:22px;
+}
+
+.navLinks a{
+  color:#aaa;
+  font-size:.9rem;
+  border-bottom:1px solid #222;
+}
+
+.navLinks a:hover{
+  color:white;
+  border-color:white;
+}
+
 .credits{
   position:fixed;
   bottom:16px;
