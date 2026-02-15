@@ -23,10 +23,8 @@ def get_db():
 @router.post("/targets/")
 def create_target(target: Target):
     
-    # run OSINT modules first
     results = run_modules(target.type, target.value)
 
-    # save target safely (NO MORE LOCKS)
     with get_db() as db:
         cur = db.cursor()
         cur.execute("""
