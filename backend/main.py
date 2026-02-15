@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from backend.api.targets import router as target_router
 from backend.api.leakguard import router as leakguard_router
 from backend.api.jobs import router as jobs_router
-from backend.db import init_db
+from backend.db.base import init_db
 
 app = FastAPI()
 
