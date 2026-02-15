@@ -1,8 +1,14 @@
+from fastapi import APIRouter
+from pydantic import BaseModel
 import sqlite3
 from contextlib import contextmanager
-from fastapi import APIRouter
-from backend.db.database import get_db
-from backend.engine.runner import run_modules
+from engine.runner import run_modules
+
+router = APIRouter()
+
+class Target(BaseModel):
+    type: str
+    value: str
 
 @contextmanager
 def get_db():
@@ -13,40 +19,22 @@ def get_db():
         conn.commit()
         conn.close()
 
-router = APIRouter(prefix="/targets", tags=["Targets"])
 
-@router.post("/")
-def create_target(target: dict):
-    db = get_db()
-    cur = db.cursor()
+@router.post("/targets/")
+def create_target(target: Target):
+    
+    # run OSINT modules first
+    results = run_modules(target.type, target.value)
 
-    cur.execute("""
-        INSERT INTO targets (type, value, risk_score)
-        VALUES (?, ?, ?)
-    """, (target["type"], target["value"], 0))
-
-    target_id = cur.lastrowid
-
-    results = run_modules(target["type"], target["value"])
-
-    for r in results:
+    # save target safely (NO MORE LOCKS)
+    with get_db() as db:
+        cur = db.cursor()
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS results (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                target_id INTEGER,
-                module TEXT,
-                data TEXT
-            )
-        """)
-        cur.execute("""
-            INSERT INTO results (target_id, module, data)
+            INSERT INTO targets (type, value, risk_score)
             VALUES (?, ?, ?)
-        """, (target_id, r["module"], str(r["result"])))
-
-    db.commit()
+        """, (target.type, target.value, 0))
 
     return {
-        "status": "scan complete",
+        "status": "ok",
         "results": results
     }
-
