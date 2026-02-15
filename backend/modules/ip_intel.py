@@ -2,6 +2,7 @@ import requests
 
 class Module:
     name = "IP Intel"
+    target_types = ["ip"]
 
     def run(self, ip):
         try:

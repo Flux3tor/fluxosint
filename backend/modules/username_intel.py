@@ -2,6 +2,7 @@ import requests
 
 class Module:
     name = "Username Intel"
+    target_types = ["username"]
 
     def run(self, username):
         sites = {

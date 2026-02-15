@@ -3,6 +3,7 @@ import whois
 
 class Module:
     name = "Domain Intel"
+    target_types = ["domain"]
 
     def run(self, domain):
         result = {}

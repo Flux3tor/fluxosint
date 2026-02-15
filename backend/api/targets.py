@@ -1,6 +1,17 @@
+import sqlite3
+from contextlib import contextmanager
 from fastapi import APIRouter
 from backend.db.database import get_db
 from backend.engine.runner import run_modules
+
+@contextmanager
+def get_db():
+    conn = sqlite3.connect("targets.db", timeout=30, check_same_thread=False)
+    try:
+        yield conn
+    finally:
+        conn.commit()
+        conn.close()
 
 router = APIRouter(prefix="/targets", tags=["Targets"])
 
@@ -38,3 +49,4 @@ def create_target(target: dict):
         "status": "scan complete",
         "results": results
     }
+
