@@ -10,12 +10,7 @@ body{
   overflow:hidden;
 }
 
-.flag{
-  position:absolute;
-  top:0;
-  left:0;
-  width:180px;
-}
+.flag{position:absolute;top:0;left:0;width:180px;}
 
 body::before{
   content:"";
@@ -28,72 +23,76 @@ body::before{
   background-size:40px 40px;
 }
 
-.osint .card{
-  max-width:520px;
-  padding:40px;
+.card{
+  width:460px;
+  text-align:center;
 }
 
-.osint .name{
-  font-size:38px;
-  margin-bottom:6px;
-}
+.name{font-size:42px;margin-bottom:8px;}
+.title{color:#8c8c8c;margin-bottom:10px;}
+.bio{color:#bfbfbf;margin-bottom:28px;}
 
-.osint .title{
-  color:#8c8c8c;
-  margin-bottom:12px;
-}
-
-.osint .bio{
-  color:#bfbfbf;
-  margin-bottom:22px;
-  line-height:1.5;
-}
-
-.osint .sectionTitle{
-  margin:26px 0 12px;
-  color:#777;
-  font-size:.85rem;
-  letter-spacing:.5px;
-  text-transform:uppercase;
-}
-
-.osint select,
-.osint input{
-  width:100%;
-  padding:12px;
-  margin-bottom:12px;
+.scanBox{
   background:#0e0e0e;
   border:1px solid #222;
-  color:#e8e8e8;
-  font-family:'Inter';
-  font-size:14px;
+  padding:22px;
+  border-radius:16px;
 }
 
-.osint #scanBtn{
+select,input{
   width:100%;
   padding:12px;
+  margin-bottom:12px;
+  background:#080808;
+  border:1px solid #222;
+  border-radius:10px;
+  color:white;
+  font-family:Inter;
+}
+
+#scanBtn{
+  width:100%;
+  padding:13px;
   background:#e8e8e8;
   color:black;
   border:none;
-  cursor:pointer;
-  margin-bottom:18px;
+  border-radius:10px;
   font-weight:600;
+  cursor:pointer;
   transition:.2s;
 }
 
-.osint #scanBtn:hover{
-  background:white;
+#scanBtn:hover{background:white}
+
+#results{margin-top:22px;text-align:left}
+
+.resultCard{
+  background:#0e0e0e;
+  border:1px solid #222;
+  padding:18px;
+  border-radius:14px;
+  margin-top:14px;
 }
 
-.osint pre{
-  border:1px solid #222;
-  background:#0e0e0e;
-  padding:16px;
-  max-height:260px;
-  overflow:auto;
-  color:#bfbfbf;
-  font-size:13px;
+.resultTitle{
+  font-size:14px;
+  color:#888;
+  margin-bottom:10px;
+  text-transform:uppercase;
 }
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  padding:6px 0;
+  border-bottom:1px solid #111;
+}
+
+.row:last-child{border:none}
+
+.good{color:#7CFFB2}
+.bad{color:#FF7C7C}
+.neutral{color:#aaa}
 
 .credits{
   position:fixed;
@@ -103,3 +102,6 @@ body::before{
   color:#555;
   font-size:.85rem;
 }
+
+.credits a{color:white}
+
