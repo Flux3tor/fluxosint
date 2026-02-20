@@ -30,5 +30,16 @@ def init_db():
     )
     """)
 
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS scan_results (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        target_id INTEGER,
+        module_name TEXT,
+        data  TEXT,
+        risk INTEGER,
+        created_at TEXT
+    );
+    """)
+
     conn.commit()
     conn.close()
