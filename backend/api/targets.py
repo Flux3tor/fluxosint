@@ -23,14 +23,14 @@ def create_target(target: Target):
 
     cur.execute("""
         INSERT INTO targets (type, value, risk_score)
-        VALUE (?, ?, ?)
+        VALUES (?, ?, ?)
     """, (target.type, target.value, overall_risk))
 
     target_id = cur.lastrowid
 
     cur.execute("""
         INSERT INTO scans (target_id, overall_risk, created_at)
-        VALUE (?, ?, ?)
+        VALUES (?, ?, ?)
     """, (target_id, overall_risk, datetime.now().isoformat()))
 
     scan_id = cur.lastrowid
