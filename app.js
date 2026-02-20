@@ -56,9 +56,12 @@ function row(label,value,status="neutral"){
     <span class="${status}">${value ?? "Unknown"}</span>
   </div>`;
 }
-
 function renderResults(data){
+  const resultsDiv = document.getElementById("results");
+  resultsDiv.innerHTML = "";
+
   const overall = data.overall_risk;
+
   const riskCard = document.createElement("div");
   riskCard.className = "resultCard";
 
@@ -77,11 +80,8 @@ function renderResults(data){
     <div class="resultTitle">Overall Risk</div>
     <div class="${cls}">${overall} (${label})</div>
   `;
-  
-  resultsDiv.appendChild(riskCard)
 
-  const resultsDiv = document.getElementById("results");
-  resultsDiv.innerHTML="";
+  resultsDiv.appendChild(riskCard);
 
   const modules = data.results;
 
