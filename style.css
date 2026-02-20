@@ -24,8 +24,9 @@ body::before{
 }
 
 .card{
-  width:460px;
+  width:1100px;
   text-align:center;
+  max-width:95%;
 }
 
 .name{font-size:42px;margin-bottom:8px;}
@@ -64,14 +65,20 @@ select,input{
 
 #scanBtn:hover{background:white}
 
-#results{margin-top:22px;text-align:left}
+#results{
+  margin-top:22px;
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap:24px;
+
+  text-align:left;
+}
 
 .resultCard{
   background:#0e0e0e;
   border:1px solid #222;
-  padding:18px;
-  border-radius:14px;
-  margin-top:14px;
+  padding:24px;
+  border-radius:16px;
 }
 
 .resultTitle{
@@ -89,6 +96,12 @@ select,input{
 }
 
 .row:last-child{border:none}
+
+.row span:last-child{
+  text-align:right;
+  word-break:break-word;
+  max-width:60%;
+}
 
 .good{color:#7CFFB2}
 .bad{color:#FF7C7C}
