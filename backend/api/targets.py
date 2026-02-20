@@ -15,6 +15,8 @@ def create_target(target: Target):
 
     results = run_modules(target.type, target.value)
 
+    overall_risk = sum(mod["result"]["risk"] for mod in results)
+
     import json
     from datetime import datetime
     
@@ -36,13 +38,37 @@ def create_target(target: Target):
     cur.execute("""
         INSERT INTO targets (type, value, risk_score)
         VALUES (?, ?, ?)
-    """, (target.type, target.value, 0))
+    """, (target.type, target.value, overall_risk))
+    target_id = cur.lastrowid
+
+    from datetime import datetime
+    
+    cur.execute("""
+        INSERT INTO scans (target_id, overall_risk, created_at)
+        VALUES (?, ?, ?)
+    """, (target_id, overall_risk, datetime.now().isoformat()))
+
+    scan_id = cur.lastrowid
+
+    import json
+
+    for mod in results:
+        cur.execute("""
+        INSERT INTO scan_results (scan_id, module_name, data, risk)
+            VALUES (?, ?, ?, ?)
+        """, (
+            scan_id,
+            mod["module"],
+            json.dumps(mod["result"]["data"]),
+            mod["result"]["risk"]
+        ))
 
     db.commit()
     db.close()
 
     return {
         "status": "ok",
+        "overall_risk": overall_risk,
         "results": results
     }
 
@@ -50,6 +76,8 @@ def create_target(target: Target):
 def get_history(target_id: int):
     db = get_db()
     cur = db.cursor()
+
+    import json
 
     cur.execute("""
         SELECT module_name, data, risk, created_at

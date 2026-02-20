@@ -21,6 +21,26 @@ def init_db():
     )
     """)
 
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS scans (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        target_id INTEGER,
+        overall_risk INTEGER,
+        created_at TEXT
+    )
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS scan_results (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        scan_id INTEGER,
+        module_name TEXT,
+        data  TEXT,
+        risk INTEGER
+    )
+    """)
+
     cur.execute("""
     CREATE TABLE IF NOT EXISTS jobs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,17 +48,6 @@ def init_db():
         interval INTEGER,
         last_run TEXT
     )
-    """)
-
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS scan_results (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        target_id INTEGER,
-        module_name TEXT,
-        data  TEXT,
-        risk INTEGER,
-        created_at TEXT
-    );
     """)
 
     conn.commit()

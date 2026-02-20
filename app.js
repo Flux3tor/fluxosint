@@ -58,6 +58,28 @@ function row(label,value,status="neutral"){
 }
 
 function renderResults(data){
+  const overall = data.overall_risk;
+  const riskCard = document.createElement("div");
+  riskCard.className = "resultCard";
+
+  let label = "Low";
+  let cls = "good";
+
+  if(overall > 60 ){
+    label = "High";
+    cls = "bad";
+  }else if(overall > 25){
+    label = "Medium";
+    cls = "neutral";
+  }
+
+  riskCard.innerHTML = `
+    <div class="resultTitle">Overall Risk</div>
+    <div class="${cls}">${overall} (${label})</div>
+  `;
+  
+  resultsDiv.appendChild(riskCard)
+
   const resultsDiv = document.getElementById("results");
   resultsDiv.innerHTML="";
 
