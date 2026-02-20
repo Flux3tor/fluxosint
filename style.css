@@ -40,8 +40,19 @@ body::before{
   border-radius:16px;
 }
 
-select,input{
+select{
   width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  background:#080808;
+  border:1px solid #222;
+  border-radius:10px;
+  color:white;
+  font-family:Inter;
+}
+
+input{
+  width:97%;
   padding:12px;
   margin-bottom:12px;
   background:#080808;
