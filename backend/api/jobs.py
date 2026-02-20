@@ -15,3 +15,4 @@ def create_job(job: dict):
 
     db.commit()
     return {"status": "job scheduled"}
+    db.close()
