@@ -58,7 +58,7 @@ async function check(){
   const prefix = hash.slice(0,5);
   const suffix = hash.slice(5);
 
-  const res = await fetch("/leakguard/"+prefix);
+  const res = await fetch("https://api.fluxosint.flux3tor.xyz/leakguard/" + prefix);
   const data = await res.json();
 
   if(data[suffix]){

@@ -23,5 +23,5 @@ def check_prefix(hash_prefix: str):
             results[suffix] = int(count)
 
         return results
-    except:
+    except Exception:
         return {"error": "request_failed"}

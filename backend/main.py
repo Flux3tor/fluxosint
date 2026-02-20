@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from backend.api.targets import router as target_router
 from backend.db.database import init_db
+from backend.api.leakguard import router as leakguard_router
 
 app = FastAPI()
+
+app.include_router(leakguard_router)
 
 app.add_middleware(
     CORSMiddleware,
