@@ -1,6 +1,7 @@
 import requests
+from backend.engine.base import OSINTModule
 
-class Module:
+class Module(OSINTModule):
     name = "Username Intel"
     target_types = ["username"]
 
@@ -21,10 +22,7 @@ class Module:
                 found[site] = False
 
         return {
-            "module": self.name,
-            "result": {
-                "status": "ok",
-                "data": found,
-                "risk": sum(found.values()) * 10
-            }
+            "status": "ok",
+            "data": found,
+            "risk": sum(found.values()) * 10
         }

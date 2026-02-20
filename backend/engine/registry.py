@@ -6,8 +6,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 MODULE_DIR = os.path.join(BASE_DIR, "modules")
 
 def load_modules():
-    print("[DEBUG] Looking for modules in:", MODULE_DIR)
-    print("[DEBUG] Files found:", os.listdir(MODULE_DIR))
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info("Loading modules...")
 
     modules = []
     sys.path.append(BASE_DIR)

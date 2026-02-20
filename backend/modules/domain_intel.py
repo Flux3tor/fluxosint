@@ -1,7 +1,8 @@
 import socket
 import whois
+from backend.engine.base import OSINTModule
 
-class Module:
+class Module(OSINTModule):
     name = "Domain Intel"
     target_types = ["domain"]
 
@@ -22,10 +23,7 @@ class Module:
             result["registrar"] = "Unknown"
 
         return {
-            "module": self.name,
-            "result": {
-                "status": "ok",
-                "data": result,
-                "risk": 25
-            }
+            "status": "ok",
+            "data": result,
+            "risk": 25
         }

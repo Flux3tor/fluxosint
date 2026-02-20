@@ -1,6 +1,7 @@
 import requests
+from backend.engine.base import OSINTModule
 
-class Module:
+class Module(OSINTModule):
     name = "IP Intel"
     target_types = ["ip"]
 
@@ -18,10 +19,7 @@ class Module:
         }
 
         return {
-            "module": self.name,
-            "result": {
-                "status": "ok",
-                "data": data,
-                "risk": 15
-            }
+            "status": "ok",
+            "data": data,
+            "risk": 15
         }
