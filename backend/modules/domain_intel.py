@@ -7,21 +7,28 @@ class Module(OSINTModule):
     target_types = ["domain"]
 
     def run(self, domain):
+
         result = {}
 
         try:
             result["ip"] = socket.gethostbyname(domain)
-        except:
+        except socket.gaierror:
             result["ip"] = "Not resolved"
 
         try:
             w = whois.whois(domain)
-            result["created"] = str(w.creation_date)
+
+            created = w.creation_date
+            if isinstance(created, list):
+                created = created[0]
+
+            result["created"] = str(created)
             result["registrar"] = str(w.registrar)
-        except:
+        
+        except Exception:
             result["created"] = "Unknown"
             result["registrar"] = "Unknown"
-
+        
         return {
             "status": "ok",
             "data": result,

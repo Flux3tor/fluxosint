@@ -1,6 +1,7 @@
 document.getElementById("year").textContent = new Date().getFullYear();
 
 function validateInput(type,value){
+
   if(!value || value.trim()==="") return "Enter a target first";
 
   if(type==="email" && !/^\S+@\S+\.\S+$/.test(value))
@@ -16,136 +17,136 @@ function validateInput(type,value){
 }
 
 async function scan(){
-  const btn = document.getElementById("scanBtn");
-  const resultsDiv = document.getElementById("results");
 
-  const value = document.getElementById("targetInput").value.trim();
-  const type = document.getElementById("typeSelect").value;
+  const btn=document.getElementById("scanBtn");
+  const resultsDiv=document.getElementById("results");
 
-  const error = validateInput(type,value);
+  const value=document.getElementById("targetInput").value.trim();
+  const type=document.getElementById("typeSelect").value;
+
+  const error=validateInput(type,value);
+
   if(error){
-    resultsDiv.innerHTML = `<div class="resultCard bad">${error}</div>`;
+    resultsDiv.innerHTML=`<div class="resultCard bad">${error}</div>`;
     return;
   }
 
-  btn.disabled = true;
-  btn.innerText = "Scanning...";
-  resultsDiv.innerHTML = `<div class="resultCard neutral">Running OSINT modules...</div>`;
+  btn.disabled=true;
+  btn.innerText="Scanning...";
+
+  resultsDiv.innerHTML=
+  `<div class="resultCard neutral">Running OSINT modules...</div>`;
 
   try{
-    const res = await fetch("https://api.fluxosint.flux3tor.xyz/targets/",{
+
+    const res=await fetch("https://api.fluxosint.flux3tor.xyz/targets/",{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body:JSON.stringify({type,value})
     });
 
-    const data = await res.json();
-    window.lastTargetId = data.target_id;
+    const data=await res.json();
+
+    window.lastTargetId=data.target_id;
+
     renderResults(data);
+    loadHistory();
 
   }catch(e){
-    resultsDiv.innerHTML = `<div class="resultCard bad">Server error</div>`;
+
+    resultsDiv.innerHTML=
+    `<div class="resultCard bad">Server error</div>`;
+
   }
 
-  btn.disabled = false;
-  btn.innerText = "Run Scan";
+  btn.disabled=false;
+  btn.innerText="Run Scan";
 }
 
 function row(label,value,status="neutral"){
   return `<div class="row">
-    <span>${label}</span>
-    <span class="${status}">${value ?? "Unknown"}</span>
+  <span>${label}</span>
+  <span class="${status}">${value ?? "Unknown"}</span>
   </div>`;
 }
 
 function renderResults(data){
-  const resultsDiv = document.getElementById("results");
-  resultsDiv.innerHTML = "";
 
-  const overall = data.overall_risk;
+  const resultsDiv=document.getElementById("results");
+  resultsDiv.innerHTML="";
 
-  const riskCard = document.createElement("div");
-  riskCard.className = "resultCard";
+  const overall=data.overall_risk;
 
-  let label = "Low";
-  let cls = "good";
+  const riskCard=document.createElement("div");
+  riskCard.className="resultCard";
 
-  if(overall > 60 ){
-    label = "High";
-    cls = "bad";
-  }else if(overall > 25){
-    label = "Medium";
-    cls = "neutral";
+  let label="Low";
+  let cls="good";
+
+  if(overall>60){
+    label="High";
+    cls="bad";
+  }
+  else if(overall>25){
+    label="Medium";
+    cls="neutral";
   }
 
-  riskCard.innerHTML = `
-    <div class="resultTitle">Overall Risk</div>
-    <div class="${cls}">${overall} (${label})</div>
+  riskCard.innerHTML=`
+  <div class="resultTitle">Overall Risk</div>
+  <div class="${cls}">${overall} (${label})</div>
   `;
 
   resultsDiv.appendChild(riskCard);
 
-  const modules = data.results;
+  const modules=data.results;
 
   modules.forEach(mod=>{
-    const card = document.createElement("div");
+
+    const card=document.createElement("div");
     card.className="resultCard";
 
-    let html = `<div class="resultTitle">${mod.module}</div>`;
-    const d = mod.result.data || {};
+    let html=`<div class="resultTitle">${mod.module}</div>`;
+    const d=mod.result.data||{};
 
-    if(mod.module === "Email Intel"){
-      html += row("Disposable", d.disposable ? "Yes":"No", d.disposable?"bad":"good");
-      html += row("Gravatar", d.gravatar_found ? "Found":"None", d.gravatar_found?"good":"neutral");
-      html += row("Domain Created", d.domain_created);
-      html += row("Paste Mentions", d.paste_mentions?"Yes":"No", d.paste_mentions?"bad":"good");
-      html += row("Risk Score", mod.result.risk, mod.result.risk>50?"bad":"good");
-    }
+    Object.entries(d).forEach(([k,v])=>{
+      html+=row(k,v);
+    });
 
-    if(mod.module === "Username Intel"){
-      Object.entries(d).forEach(([site,found])=>{
-        html += row(site, found?"Found":"Not Found", found?"good":"neutral");
-      });
-    }
-
-    if(mod.module === "Domain Intel"){
-      html += row("IP Address", d.ip);
-      html += row("Created", d.created);
-      html += row("Registrar", d.registrar);
-    }
-
-    if(mod.module === "IP Intel"){
-      html += row("Country", d.country);
-      html += row("City", d.city);
-      html += row("ISP", d.isp);
-      html += row("Org", d.org);
-    }
-
-    card.innerHTML = html;
+    card.innerHTML=html;
     resultsDiv.appendChild(card);
+
   });
-  loadHistory();
+
 }
 
-async function loadHistory() {
-  if (!window.lastTargetId) return;
+async function loadHistory(){
 
-  const res = await fetch(`https://api.fluxosint.flux3tor.xyz/targets/${window.lastTargetId}/scans`);
-  const scans = await res.json();
+  if(!window.lastTargetId) return;
 
-  const history = document.getElementById("history");
-  history.innerHTML = "";
+  const res=await fetch(
+  `https://api.fluxosint.flux3tor.xyz/targets/${window.lastTargetId}/scans`
+  );
 
-  scans.forEach(s => {
-    const card = document.createElement("div");
-    card.className = "resultCard";
+  const scans=await res.json();
 
-  card.innerHTML = `
+  const history=document.getElementById("history");
+
+  history.innerHTML="";
+
+  scans.slice(1).forEach(s=>{
+
+    const card=document.createElement("div");
+    card.className="resultCard";
+
+    card.innerHTML=`
     <div class="resultTitle">Previous Scan</div>
     <div>Risk: ${s.risk}</div>
     <div>${s.created_at}</div>
     `;
 
     history.appendChild(card);
+
   });
+
 }
