@@ -13,26 +13,36 @@ class Target(BaseModel):
 def create_target(target: Target):
 
     results = run_modules(target.type, target.value)
-    overall_risk = sum(mod["result"]["risk"] for mod in results)
+    overall_risk = sum(mod ["result"]["risk"] for mod in results)
 
     from datetime import datetime
     import json
-    
+
     db = get_db()
     cur = db.cursor()
 
-    cur.execute("""
+    cur.execute(
+        "SELECT id FROM targets WHERE type=? AND value=?",
+        (target.type, target.value)
+    )
+
+    existing = cur.fetchone()
+
+    if existing:
+        target_id = existing[0]
+    else:
+        cur.execute("""
         INSERT INTO targets (type, value, risk_score)
-        VALUES (?, ?, ?)
-    """, (target.type, target.value, overall_risk))
+            VALUES (?, ?, ?)
+        """, (target.type, target.value, overall_risk))
 
-    target_id = cur.lastrowid
-
+        target_id = cur.lastrowid
+    
     cur.execute("""
         INSERT INTO scans (target_id, overall_risk, created_at)
-        VALUES (?, ?, ?)
-    """, (target_id, overall_risk, datetime.now().isoformat()))
-
+            VALUES (?, ?, ?)
+        """, (target_id, overall_risk, datetime.now().isoformat()))
+    
     scan_id = cur.lastrowid
 
     for mod in results:
@@ -45,12 +55,13 @@ def create_target(target: Target):
             json.dumps(mod["result"]["data"]),
             mod["result"]["risk"]
         ))
-
+    
     db.commit()
     db.close()
 
     return {
         "status": "ok",
+        "target_id": target_id,
         "overall_risk": overall_risk,
         "results": results
     }
@@ -83,9 +94,7 @@ def get_history(target_id: int):
             WHERE scan_id = ?
         """, (scan_id,))
 
-        modules = cur.fetchall()
-
-        history.append({
+        modules = cur.fetchall({
             "scan_id": scan_id,
             "overall_risk": overall_risk,
             "created_at": created_at,
@@ -98,12 +107,13 @@ def get_history(target_id: int):
                 for m in modules
             ]
         })
-
+    
     db.close()
     return history
 
 @router.get("/targets/{target_id}/scans")
 def get_scans(target_id: int):
+
     db = get_db()
     cur = db.cursor()
 
