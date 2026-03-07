@@ -40,6 +40,7 @@ async function scan(){
     });
 
     const data = await res.json();
+    window.lastTargetId = data.target_id;
     renderResults(data);
 
   }catch(e){
@@ -56,6 +57,7 @@ function row(label,value,status="neutral"){
     <span class="${status}">${value ?? "Unknown"}</span>
   </div>`;
 }
+
 function renderResults(data){
   const resultsDiv = document.getElementById("results");
   resultsDiv.innerHTML = "";
@@ -121,5 +123,29 @@ function renderResults(data){
 
     card.innerHTML = html;
     resultsDiv.appendChild(card);
+  });
+  loadHistory();
+}
+
+async function loadHistory() {
+  if (!window.lastTargetId) return;
+
+  const res = await fetch(`https://api.fluxosint.flux3tor.xyz/targets/${window.lastTargetId}/scans`);
+  const scans = await res.json();
+
+  const history = document.getElementById("history");
+  history.innerHTML = "";
+
+  scans.forEach(s => {
+    const card = document.createElement("div");
+    card.className = "resultCard";
+
+  card.innerHTML = `
+    <div class="resultTitle">Previous Scan</div>
+    <div>Risk: ${s.risk}</div>
+    <div>${s.created_at}</div>
+    `;
+
+    history.appendChild(card);
   });
 }

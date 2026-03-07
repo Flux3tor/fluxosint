@@ -101,3 +101,28 @@ def get_history(target_id: int):
 
     db.close()
     return history
+
+@router.get("/targets/{target_id}/scans")
+def get_scans(target_id: int):
+    db = get_db()
+    cur = db.cursor()
+
+    cur.execute("""
+        SELECT id, overall_risk, created_at
+        FROM scans
+        WHERE target_id = ?
+        ORDER BY created_at DESC
+    """, (target_id,))
+
+    scans = cur.fetchall()
+
+    db.close()
+
+    return [
+        {
+            "scan_id": s[0],
+            "risk": s[1],
+            "created_at": s[2]
+        }
+        for s in scans
+    ]
