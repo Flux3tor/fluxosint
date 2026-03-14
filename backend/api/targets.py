@@ -2,6 +2,8 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from backend.db.database import get_db
 from backend.engine.runner import run_modules
+from datetime import datetime
+import json
 
 router = APIRouter()
 
@@ -13,10 +15,7 @@ class Target(BaseModel):
 def create_target(target: Target):
 
     results = run_modules(target.type, target.value)
-    overall_risk = sum(mod ["result"]["risk"] for mod in results)
-
-    from datetime import datetime
-    import json
+    overall_risk = sum(mod["result"]["risk"] for mod in results)
 
     db = get_db()
     cur = db.cursor()
@@ -25,36 +24,33 @@ def create_target(target: Target):
         "SELECT id FROM targets WHERE type=? AND value=?",
         (target.type, target.value)
     )
-
     existing = cur.fetchone()
 
     if existing:
         target_id = existing[0]
     else:
-        cur.execute("""
-        INSERT INTO targets (type, value, risk_score)
-            VALUES (?, ?, ?)
-        """, (target.type, target.value, overall_risk))
-
+        cur.execute(
+            "INSERT INTO targets (type,value,risk_score) VALUES (?,?,?)",
+            (target.type, target.value, overall_risk)
+        )
         target_id = cur.lastrowid
-    
-    cur.execute("""
-        INSERT INTO scans (target_id, overall_risk, created_at)
-            VALUES (?, ?, ?)
-        """, (target_id, overall_risk, datetime.now().isoformat()))
-    
+
+    cur.execute(
+        "INSERT INTO scans (target_id,overall_risk,created_at) VALUES (?,?,?)",
+        (target_id, overall_risk, datetime.now().isoformat())
+    )
     scan_id = cur.lastrowid
 
     for mod in results:
-        cur.execute("""
-        INSERT INTO scan_results (scan_id, module_name, data, risk)
-            VALUES (?, ?, ?, ?)
-        """, (
-            scan_id,
-            mod["module"],
-            json.dumps(mod["result"]["data"]),
-            mod["result"]["risk"]
-        ))
+        cur.execute(
+            "INSERT INTO scan_results (scan_id,module_name,data,risk) VALUES (?,?,?,?)",
+                (
+                    scan_id,
+                    mod["module"],
+                    json.dumps(mod["result"]["data"]),
+                    mod["result"]["risk"]
+                )
+        )
     
     db.commit()
     db.close()
@@ -66,73 +62,72 @@ def create_target(target: Target):
         "results": results
     }
 
+@router.get("/targets")
+def get_targets():
+
+    db = get_db()
+
+    cur = db.cursor()
+
+    cur.execute("""
+        SELECT id,type,value,risk_score
+        FROM targets
+        ORDER BY id DESC
+    """)
+
+    rows = cur.fetchall()
+    db.close()
+
+    return [
+        {
+            "id": r[0],
+            "type": r[1],
+            "value": r[2],
+            "risk": r[3]
+        }
+        for r in rows
+    ]
+
 @router.get("/targets/{target_id}/history")
 def get_history(target_id: int):
 
     db = get_db()
     cur = db.cursor()
 
-    import json
-
     cur.execute("""
-        SELECT s.id, s.overall_risk, s.created_at
-        FROM scans s
-        WHERE s.target_id = ?
-        ORDER BY s.created_at DESC
-    """, (target_id,))
+        SELECT id,overall_risk,created_at
+        FROM scans
+        WHERE target_id=?
+        ORDER BY created_at DESC
+    """,(target_id,))
 
     scans = cur.fetchall()
 
-    history = []
+    history=[]
 
     for scan in scans:
-        scan_id, overall_risk, created_at = scan
+
+        scan_id, risk, created = scan
 
         cur.execute("""
-            SELECT module_name, data, risk
+            SELECT module_name,data,risk
             FROM scan_results
-            WHERE scan_id = ?
-        """, (scan_id,))
+            WHERE scan_id=?
+        """,(scan_id,))
 
-        modules = cur.fetchall({
+        modules = cur.fetchall()
+        
+        history.append({
             "scan_id": scan_id,
-            "overall_risk": overall_risk,
-            "created_at": created_at,
-            "modules": [
+            "overall_risk": risk,
+            "created_at": created,
+            "modules":[
                 {
-                    "module": m[0],
-                    "data": json.loads(m[1]),
-                    "risk": m[2]
+                    "module":m[0],
                 }
                 for m in modules
             ]
         })
-    
+
     db.close()
     return history
-
-@router.get("/targets/{target_id}/scans")
-def get_scans(target_id: int):
-
-    db = get_db()
-    cur = db.cursor()
-
-    cur.execute("""
-        SELECT id, overall_risk, created_at
-        FROM scans
-        WHERE target_id = ?
-        ORDER BY created_at DESC
-    """, (target_id,))
-
-    scans = cur.fetchall()
-
-    db.close()
-
-    return [
-        {
-            "scan_id": s[0],
-            "risk": s[1],
-            "created_at": s[2]
-        }
-        for s in scans
-    ]
