@@ -5,9 +5,9 @@ body{
   background:#080808;
   min-height:100vh;
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   justify-content:center;
-  overflow:hidden;
+  overflow-y:auto;
 }
 
 .flag{position:absolute;top:0;left:0;width:180px;}
@@ -27,6 +27,8 @@ body::before{
     width: 450px;
     text-align: center;
     min-width: 50vw;
+    margin-top:80px;
+    margin-bottom:80px;
 }
 
 .name{font-size:42px;margin-bottom:8px;}
