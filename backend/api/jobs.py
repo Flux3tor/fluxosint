@@ -14,5 +14,6 @@ def create_job(job: dict):
     """, (job["target_id"], job["interval"], None))
 
     db.commit()
-    return {"status": "job scheduled"}
     db.close()
+
+    return {"status": "job scheduled"}

@@ -22,7 +22,7 @@ def load_modules():
                 mod = importlib.import_module(f"modules.{mod_name}")
                 modules.append(mod.Module())
 
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[ERROR] Failed to load module '{mod_name}': {e}")
 
     return modules

@@ -1,10 +1,10 @@
-class OSINTModule:
+from abc import ABC, abstractmethod
+
+class OSINTModule(ABC):
     name = "base"
     target_types = []
 
+    @abstractmethod
     def run(self, target: str) -> dict:
-        return {
-            "status": "ok",
-            "data": {},
-            "risk": 0
-        }
+        """Run the module against the target."""
+        pass

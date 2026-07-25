@@ -23,5 +23,6 @@ def check_prefix(hash_prefix: str):
             results[suffix] = int(count)
 
         return results
-    except Exception:
+    except Exception as e:
+        print(f"[LeakGuard] {e}")
         return {"error": "request_failed"}
